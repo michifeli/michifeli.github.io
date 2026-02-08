@@ -29,9 +29,12 @@
 		padding: 0;
 		background: var(--bg, #1c1c1c);
 		color: var(--text, #ececec);
-		font-family: system-ui, -apple-system, sans-serif;
+		font-family:
+			system-ui,
+			-apple-system,
+			sans-serif;
 		line-height: 1.6;
-		--link-color: #F763BF;
+		--link-color: #f763bf;
 		--text-muted: #a0a0a0;
 		--border: #3a3a3a;
 	}
