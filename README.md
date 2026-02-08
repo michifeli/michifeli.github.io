@@ -1,42 +1,33 @@
-# sv
+# Portfolio/Blog (Mitchel “michi” Rojas)
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+Este repositorio contiene el sitio personal y blog minimalista hecho con Svelte. Este repositorio es la v2 de la pagina anterior, que personalmente no me gusto, aqui corrigo algunos errorees y lo apato mas a mi estilo.
 
-## Creating a project
+## Requisitos
 
-If you're seeing this, you've probably already done this step. Congrats!
+- [Node.js](https://nodejs.org/en) (>= 22.x)
+- [pnpm](https://pnpm.io/es/) (>= 10.x)
 
-```sh
-# create a new project
-npx sv create my-app
-```
+## Ejecución local
 
-To recreate this project with the same configuration:
+1. Clona este repositorio:
 
-```sh
-# recreate this project
-pnpm dlx sv create --template minimal --types ts --add prettier eslint mdsvex --install pnpm .
-```
+   ```bash
+   git clone [https://github.com/michifeli/webv2.git](https://github.com/michifeli/webv2.git)
 
-## Developing
+   ```
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+2. Navega al directorio del proyecto:
+   ```bash
+   cd webv2
+   ```
+3. Instala las dependencias:
+   ```bash
+   pnpm install
+   ```
+4. Inicia el servidor de desarrollo:
+   ```bash
+   pnpm run dev
+   ```
+5. Abre tu navegador y visita [http://localhost:5173](http://localhost:5173) para ver el sitio web en acción.
 
-```sh
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```sh
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+<img src="https://user-images.githubusercontent.com/123886904/218294072-d474a330-7464-430a-b369-91f79373dbca.svg" width="100%" title="Footer">
