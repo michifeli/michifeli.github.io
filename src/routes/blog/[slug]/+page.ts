@@ -2,7 +2,6 @@ import { error } from '@sveltejs/kit';
 
 export async function load({ params }) {
 	try {
-		// CORRECCIÓN: Usamos 3 niveles (../../..) para llegar a 'src', y de ahí a 'posts'
 		const post = await import(`../../../posts/${params.slug}.md`);
 
 		return {
