@@ -4,7 +4,8 @@
 
 <svelte:head>
 	<title>About - Mitchel Rojas</title>
-	<meta name="description" content="Sobre Mitchel Rojas - Desarrollador y entusiasta de Linux" />
+	<meta name="description" content="Sobre Mitchel Rojas..." />
+	<link rel="preload" as="image" href={avatarUrl} />
 </svelte:head>
 
 <section class="about">
@@ -15,39 +16,44 @@
 	</a>
 
 	<p>
-		Soy un desarrollador entusiasta y técnico electrónico basado en 
-		<a href="https://es.wikipedia.org/wiki/Chile" target="_blank" rel="noopener noreferrer">Chile 🇨🇱</a>, 
-		apasionado por crear cosas útiles para el mundo y compartir mi conocimiento con los demás.
+		Soy un desarrollador entusiasta y técnico electrónico basado en
+		<a href="https://es.wikipedia.org/wiki/Chile" target="_blank" rel="noopener noreferrer"
+			>Chile 🇨🇱</a
+		>, apasionado por crear cosas útiles para el mundo y compartir mi conocimiento con los demás.
 	</p>
 
 	<p>
-		Cuando era más niño, me pasaba mis tardes en el internet viendo videos en Youtube, 
-		hasta que un día descubrí un video que hablaba sobre 
-		<a href="https://ssd.eff.org/es" target="_blank" rel="noopener noreferrer">privacidad de datos y anonimato en internet</a>. 
-		Desde entonces, me interesé en la cultura hacker como una manera de salvaguardar mi privacidad e identidad digital.
+		Cuando era más niño, me pasaba mis tardes en el internet viendo videos en Youtube, hasta que un
+		día descubrí un video que hablaba sobre
+		<a href="https://ssd.eff.org/es" target="_blank" rel="noopener noreferrer"
+			>privacidad de datos y anonimato en internet</a
+		>. Desde entonces, me interesé en la cultura hacker como una manera de salvaguardar mi
+		privacidad e identidad digital.
 	</p>
 
 	<p>
-		Como no sabía nada le pedí a un técnico que instalara Linux, me cobró algo de 20 dólares 
-		(no sabía que era tan simple como bootear un USB). Elegí 
-		<a href="https://www.kali.org/" target="_blank" rel="noopener noreferrer">Kali Linux</a> como 
-		primera distribución, porque era Hacker y ¿quién no quiere ser hacker a tus 16 años?
+		Como no sabía nada le pedí a un técnico que instalara Linux, me cobró algo de 20 dólares (no
+		sabía que era tan simple como bootear un USB). Elegí
+		<a href="https://www.kali.org/" target="_blank" rel="noopener noreferrer">Kali Linux</a> como primera
+		distribución, porque era Hacker y ¿quién no quiere ser hacker a tus 16 años?
 	</p>
 
 	<p>
-		Actualmente estudio Ingeniería Civil Telemática en la Universidad Técnica 
-		Federico Santa María, donde trato de pasar los ramos de plan común y cuando tengo tiempo 
-		complemento mi formación con proyectos bacanes de código abierto.
+		Actualmente estudio Ingeniería Civil Telemática en la Universidad Técnica Federico Santa María,
+		donde trato de pasar los ramos de plan común y cuando tengo tiempo complemento mi formación con
+		proyectos bacanes de código abierto.
 	</p>
 
 	<p>
-		En mis veranos trabajo como Técnico Electrónico que es una de mis otras habilidades, que estudié en el liceo de mi comuna. Realmente no me gusta tanto, a no ser que sean temas de IoT, pero me ayuda a estar más en contacto con lo físico y lo tangible.
+		En mis veranos trabajo como Técnico Electrónico que es una de mis otras habilidades, que estudié
+		en el liceo de mi comuna. Realmente no me gusta tanto, a no ser que sean temas de IoT, pero me
+		ayuda a estar más en contacto con lo físico y lo tangible.
 	</p>
 
 	<p>
-		Cofundé <a href="https://lyoss.org" target="_blank" rel="noopener noreferrer">Lyoss USM</a>, 
-		una comunidad dedicada a promover Linux y a realizar proyectos open source para el bien 
-		común en la universidad.
+		Cofundé <a href="https://lyoss.org" target="_blank" rel="noopener noreferrer">Lyoss USM</a>, una
+		comunidad dedicada a promover Linux y a realizar proyectos open source para el bien común en la
+		universidad.
 	</p>
 </section>
 
@@ -56,24 +62,25 @@
 
 	<ul>
 		<li>
-			Ayudante de Cátedra en Proyecto Inicial, ayudando a estudiantes de telemática y plan común 
-			en sus primeros pasos en ingeniería, impulsando proyectos innovadores.
+			Ayudante de Cátedra en Proyecto Inicial, ayudando a estudiantes de telemática y plan común en
+			sus primeros pasos en ingeniería, impulsando proyectos innovadores.
 		</li>
 		<li>
-			Trabajé como Documentador IA en 
-			<a href="http://axiovista.com/" target="_blank" rel="noopener noreferrer">Axiovista</a>, 
-			donde realicé documentación técnica que sirve de entrenamiento para modelos de 
-			Inteligencia Artificial.
+			Trabajé como Documentador IA en
+			<a href="http://axiovista.com/" target="_blank" rel="noopener noreferrer">Axiovista</a>, donde
+			realicé documentación técnica que sirve de entrenamiento para modelos de Inteligencia
+			Artificial.
 		</li>
 		<li>
-			Colaborador y desarrollador de sistemas de telemetría e IoT para 
-			monitoreo hídrico rural en <a href="https://prommra.cl" target="_blank" rel="noopener noreferrer">PROMMRA</a> (Universidad de la Serena). 
-			Reparación, mantención e instalación de equipos electrónicos.
+			Colaborador y desarrollador de sistemas de telemetría e IoT para monitoreo hídrico rural en <a
+				href="https://prommra.cl"
+				target="_blank"
+				rel="noopener noreferrer">PROMMRA</a
+			> (Universidad de la Serena). Reparación, mantención e instalación de equipos electrónicos.
 		</li>
 		<li>
-			Soporte TI en la Ilustre Municipalidad de Ovalle, 
-			brindando soporte al usuario final, mantención de hardware y software 
-			en dependencias municipales.
+			Soporte TI en la Ilustre Municipalidad de Ovalle, brindando soporte al usuario final,
+			mantención de hardware y software en dependencias municipales.
 		</li>
 	</ul>
 </section>
@@ -112,15 +119,15 @@
 
 	.about a,
 	.experience a {
-		color: #F763BF;
-		border-bottom: 1px solid #F763BF50;
+		color: #f763bf;
+		border-bottom: 1px solid #f763bf50;
 		text-decoration: none;
 		transition: border-color 0.2s;
 	}
 
 	.about a:hover,
 	.experience a:hover {
-		border-color: #F763BF;
+		border-color: #f763bf;
 	}
 
 	.experience {
