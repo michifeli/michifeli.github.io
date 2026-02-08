@@ -1,5 +1,5 @@
 <script lang="ts">
-	import favicon from '$lib/assets/image.webp';
+	import favicon from '$lib/assets/cat.svg';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import Footer from '$lib/components/Footer.svelte';
 	import GrowingBranches from '$lib/components/GrowingBranches.svelte';
