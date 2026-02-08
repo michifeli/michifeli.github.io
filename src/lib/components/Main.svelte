@@ -1,3 +1,15 @@
+<script lang="ts">
+	type Post = {
+		title: string;
+		slug: string;
+		date: string;
+		year: string;
+		readTime: number;
+	};
+
+	let { posts }: { posts: Post[] } = $props();
+</script>
+
 <main>
 	<section class="hero">
 		<div class="intro">
@@ -9,8 +21,8 @@
 				</h1>
 			</div>
 			<p class="bio">
-				Avocado a GNU/Linux y el Open Source. Estudiante de Ingeniería.
-				Trato de hacer cosas simples y minimalistas.
+				Avocado a GNU/Linux y el Open Source. Estudiante de Ingeniería. Trato de hacer cosas simples
+				y minimalistas.
 			</p>
 		</div>
 	</section>
@@ -18,11 +30,17 @@
 	<section class="section">
 		<h2 class="section-title">Writing</h2>
 		<ul class="post-list">
-			<li class="post-item">
-				<span class="post-date">2026</span>
-				<a href="/blog/minimalismo-digital" class="post-title">Minimalismo digital en la era de la distracción</a>
-				<span class="post-min">4min</span>
-			</li>
+			{#each posts as post (post.slug)}
+				<li class="post-item">
+					<span class="post-date">{post.year}</span>
+
+					<a href="/blog/{post.slug}" class="post-title" data-sveltekit-preload-data>
+						{post.title}
+					</a>
+
+					<span class="post-min">{post.readTime}min</span>
+				</li>
+			{/each}
 		</ul>
 	</section>
 
@@ -34,18 +52,18 @@
 				<a href="https://github.com/michifeli/webv2" class="post-title">webv2</a>
 				<span class="post-desc">Este sitio web, hecho con SvelteKit</span>
 			</li>
-            <li class="post-item">
+			<li class="post-item">
 				<span class="post-date">2025</span>
 				<a href="https://github.com/michifeli/chiledev" class="post-title">chiledev</a>
 				<span class="post-desc">Tecnologías más demandadas en Chile</span>
 			</li>
 
-            <li class="post-item">
-                <span class="post-date">2025</span>
-                <a href="https://github.com/michifeli/webv1" class="post-title">webv1</a>
-                <span class="post-desc">La primera versión de mi web, hecho con Astro</span>
+			<li class="post-item">
+				<span class="post-date">2025</span>
+				<a href="https://github.com/michifeli/webv1" class="post-title">webv1</a>
+				<span class="post-desc">La primera versión de mi web, hecho con Astro</span>
 			</li>
-            <li class="post-item">
+			<li class="post-item">
 				<span class="post-date">2025</span>
 				<a href="https://github.com/michifeli/michidots" class="post-title">michidots</a>
 				<span class="post-desc">Dotfiles suckless sin sacrificar lo moderno</span>
