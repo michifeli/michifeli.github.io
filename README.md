@@ -2,6 +2,8 @@
 
 Este repositorio contiene el sitio personal y blog minimalista hecho con Svelte. Este repositorio es la v2 de la pagina anterior, que personalmente no me gusto, aqui corrigo algunos errorees y lo apato mas a mi estilo.
 
+Esta fuertemente inspirado en el trabajo de [Guillermo Rauch](https://rauchg.com/).
+
 ## Requisitos
 
 - [Node.js](https://nodejs.org/en) (>= 22.x)
