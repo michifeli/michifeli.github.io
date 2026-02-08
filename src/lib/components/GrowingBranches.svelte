@@ -23,7 +23,6 @@
 	let leftSvg: SVGSVGElement;
 	let rightSvg: SVGSVGElement;
 
-	// Genera un árbol sakura recursivo
 	function generateSakura(
 		x: number,
 		y: number,
@@ -41,7 +40,6 @@
 		const endX = x + Math.cos(rad) * length;
 		const endY = y + Math.sin(rad) * length;
 
-		// Curva bezier para rama orgánica
 		const ctrlX = x + Math.cos(rad) * length * 0.5 + (Math.random() - 0.5) * 20;
 		const ctrlY = y + Math.sin(rad) * length * 0.5 + (Math.random() - 0.5) * 10;
 
@@ -51,7 +49,6 @@
 			strokeWidth: Math.max(0.5, 3 - depth * 0.5)
 		});
 
-		// Pétalos solo en las puntas finales de las ramas (reducido para performance)
 		if (depth >= 4 && Math.random() > 0.4) {
 			const petalCount = 2 + Math.floor(Math.random() * 2);
 			for (let i = 0; i < petalCount; i++) {
@@ -67,7 +64,6 @@
 			}
 		}
 
-		// Sub-ramas
 		const branchCount = depth < 2 ? 3 : 2;
 		for (let i = 0; i < branchCount; i++) {
 			const spread = 25 + Math.random() * 20;
@@ -81,14 +77,12 @@
 		const branches = svg.querySelectorAll('.branch');
 		const petals = svg.querySelectorAll('.petal');
 
-		// Configurar dasharray para cada rama
 		branches.forEach((branch) => {
 			const length = (branch as SVGPathElement).getTotalLength();
 			(branch as SVGPathElement).style.strokeDasharray = String(length);
 			(branch as SVGPathElement).style.strokeDashoffset = String(length);
 		});
 
-		// Animar ramas - construcción rápida (~2 segundos total)
 		animate(branches, {
 			strokeDashoffset: 0,
 			ease: 'outSine',
@@ -96,7 +90,6 @@
 			delay: stagger(15)
 		});
 
-		// Animar pétalos - aparecen rápido después de las ramas
 		animate(petals, {
 			opacity: [0, 0.85],
 			ease: 'outQuad',
@@ -104,10 +97,8 @@
 			delay: stagger(8, { start: 400 })
 		});
 
-		// Calcular cuándo termina la construcción del árbol
 		const totalBuildTime = 400 + branches.length * 15 + 300 + petals.length * 8;
 
-		// Caída de pétalos - usar CSS classes para mejor rendimiento
 		setTimeout(() => {
 			svg.classList.add('falling');
 		}, totalBuildTime + 3000);
@@ -120,7 +111,6 @@
 		const tempLeftPetals: Petal[] = [];
 		const tempRightPetals: Petal[] = [];
 
-		// Sakura izquierdo - crece desde arriba hacia abajo (más profundidad y largo)
 		generateSakura(
 			0,
 			0,
@@ -133,7 +123,6 @@
 			tempLeftPetals
 		);
 
-		// Sakura derecho - crece desde arriba hacia abajo (más profundidad y largo)
 		generateSakura(
 			350,
 			0,
@@ -151,36 +140,13 @@
 		leftPetals = tempLeftPetals;
 		rightPetals = tempRightPetals;
 
-		// Quitar la clase de caída si existe
 		if (leftSvg) leftSvg.classList.remove('falling');
 		if (rightSvg) rightSvg.classList.remove('falling');
 
-		// Esperar a que el DOM se actualice
 		requestAnimationFrame(() => {
 			if (leftSvg) animateSvg(leftSvg);
 			if (rightSvg) animateSvg(rightSvg);
 		});
-
-		// Calcular el tiempo total de animación
-		const buildTime = 400 + tempLeftBranches.length * 15 + 300 + tempLeftPetals.length * 8;
-		const fallTime = 2000; // 2s de caída
-		const waitAfterFall = 10000; // 10s pelado
-
-		// Cuando termina la caída, reiniciar el ciclo
-		setTimeout(
-			() => {
-				if (leftSvg) leftSvg.classList.remove('falling');
-				if (rightSvg) rightSvg.classList.remove('falling');
-				// Limpiar ramas y pétalos para que quede pelado
-				leftPetals = [];
-				rightPetals = [];
-				// Esperar 10s y volver a generar
-				setTimeout(() => {
-					startSakuraCycle();
-				}, waitAfterFall);
-			},
-			buildTime + 3000 + fallTime
-		);
 	}
 
 	onMount(() => {
