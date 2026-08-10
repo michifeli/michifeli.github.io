@@ -1,0 +1,317 @@
+---
+
+---
+
+<div id="ascii-particles" aria-hidden="true"></div>
+
+<style is:global>
+	:root {
+		--particle-home: #b47ae2;
+		--particle-home-glow: #6f4b97;
+		--particle-article: #9368b8;
+		--particle-article-glow: #52376f;
+		--particle-volume: #a878d2;
+		--particle-volume-glow: #68448c;
+		--text-font: "gohu", ui-monospace, "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
+		--text-size: 14px;
+	}
+
+	#ascii-particles {
+		position: fixed;
+		inset: 0;
+		z-index: 2;
+		overflow: hidden;
+		pointer-events: none;
+		contain: layout paint style;
+	}
+
+	#ascii-particles span {
+		position: absolute;
+		top: 0;
+		left: 0;
+		display: block;
+		color: var(--particle-home);
+		font-family: var(--text-font);
+		font-size: calc(var(--text-size) + 1px);
+		line-height: 1;
+		opacity: 0;
+		mix-blend-mode: screen;
+		text-shadow: 0 0 4px var(--particle-home-glow);
+		backface-visibility: hidden;
+		will-change: opacity, transform;
+	}
+
+	#ascii-particles[data-particle-context="article"] span {
+		color: var(--particle-article);
+		text-shadow: 0 0 2px var(--particle-article-glow);
+	}
+
+	#ascii-particles[data-particle-context="volume"] span {
+		color: var(--particle-volume);
+		text-shadow: 0 0 3px var(--particle-volume-glow);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		#ascii-particles {
+			display: none;
+		}
+	}
+</style>
+
+<script>
+	const CHARS = [".", ".", "·", "·", ":", "'", "*"];
+
+	const sample = (arr: string[]): string => arr[Math.floor(Math.random() * arr.length)];
+	const rand = (min: number, max: number): number => min + Math.random() * (max - min);
+
+	const layer = document.getElementById("ascii-particles");
+
+	if (layer && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+		const MOBILE_BREAKPOINT = 760;
+		const CONTENT_SAFE_WIDTH = 760;
+		const RADIUS = 150;
+		const TAP_FORCE = 1.62;
+		const TAP_RADIUS = 1.42;
+		const TAP_DURATION = 620;
+		const POINTER_FRAME_MS = 42;
+		const DRIFT_X = [-0.28, 0.28] as const;
+		const DRIFT_Y = [-0.72, -0.2] as const;
+		const SPEED = [0.03, 0.085] as const;
+		const BIG_CHANCE = 0.08;
+		const BIG_RANGE = [1.4, 1.6] as const;
+
+		const saveData = Boolean((navigator as any).connection?.saveData);
+		const lowPower =
+			((navigator as any).hardwareConcurrency ?? 8) <= 4 ||
+			((navigator as any).deviceMemory ?? 8) <= 4;
+
+		const contexts = {
+			home: { desktopCount: 100, mobileCount: 44, opacity: [0.3, 0.62], pointerScale: 1, frameDesktop: 42, frameMobile: 50 },
+			volume: { desktopCount: 38, mobileCount: 18, opacity: [0.2, 0.44], pointerScale: 0.72, frameDesktop: 52, frameMobile: 66 },
+			article: { desktopCount: 22, mobileCount: 14, opacity: [0.12, 0.28], pointerScale: 0.45, frameDesktop: 78, frameMobile: 88 },
+		} as const;
+
+		const contextKey = document.querySelector(".home-shell")
+			? "home"
+			: document.querySelector(".volume-wrap")
+				? "volume"
+				: "article";
+		const config = contexts[contextKey];
+		layer.dataset.particleContext = contextKey;
+
+		const BASE_SIZE =
+			(parseFloat(getComputedStyle(layer).getPropertyValue("--text-size")) || 14) + 1;
+
+		interface Particle {
+			element: HTMLElement;
+			x: number;
+			y: number;
+			vx: number;
+			vy: number;
+			baseOpacity: number;
+			phase: number;
+			speed: number;
+		}
+
+		const pointer = { x: NaN, y: NaN, active: false };
+		const tap = { x: NaN, y: NaN, start: 0, active: false };
+		let particles: Particle[] = [];
+		let rafId = 0;
+		let last = 0;
+
+		const isMobile = (): boolean => window.innerWidth < MOBILE_BREAKPOINT;
+		const frameMs = (): number =>
+			(isMobile() ? config.frameMobile : config.frameDesktop) * (lowPower ? 1.15 : 1);
+		const pointerFrameMs = (): number =>
+			pointer.active || tap.active ? POINTER_FRAME_MS : frameMs();
+		const targetCount = (): number => {
+			const base = isMobile() ? config.mobileCount : config.desktopCount;
+			const scale = saveData ? 0.45 : lowPower ? 0.68 : 1;
+			return Math.max(4, Math.round(base * scale));
+		};
+		const spawnX = (w: number): number => {
+			if (contextKey === "home" || w <= CONTENT_SAFE_WIDTH) return Math.random() * w;
+			const gutter = (w - CONTENT_SAFE_WIDTH) / 2;
+			const bound = gutter * 0.82;
+			return Math.random() < 0.5 ? rand(0, bound) : rand(w - bound, w);
+		};
+
+		function resetParticle(p: Particle, anywhere: boolean): void {
+			const fromEdge = (Math.random() * 4) | 0;
+			const w = Math.max(1, window.innerWidth);
+			const h = Math.max(1, window.innerHeight);
+
+			if (anywhere || fromEdge === 0) {
+				p.x = Math.random() * w;
+				p.y = Math.random() * h;
+			} else if (fromEdge === 1) {
+				p.x = w + rand(4, 20);
+				p.y = Math.random() * h;
+			} else if (fromEdge === 2) {
+				p.x = -rand(4, 20);
+				p.y = Math.random() * h;
+			} else {
+				p.x = Math.random() * w;
+				p.y = h + rand(4, 20);
+			}
+
+			p.vx = rand(DRIFT_X[0], DRIFT_X[1]);
+			p.vy = rand(DRIFT_Y[0], DRIFT_Y[1]);
+			p.baseOpacity = rand(config.opacity[0], config.opacity[1]);
+			p.phase = Math.random() * Math.PI * 2;
+			p.speed = rand(SPEED[0], SPEED[1]);
+			p.element.textContent = sample(CHARS);
+		}
+
+		function spawn(): void {
+			const count = targetCount();
+			for (let i = 0; i < count; i++) {
+				const el = document.createElement("span");
+				el.textContent = sample(CHARS);
+				const size =
+					Math.random() < BIG_CHANCE ? BASE_SIZE * rand(BIG_RANGE[0], BIG_RANGE[1]) : BASE_SIZE;
+				if (size !== BASE_SIZE) {
+					const shift = (size - BASE_SIZE) / 2;
+					el.style.fontSize = `${size.toFixed(1)}px`;
+					el.style.marginTop = `-${shift.toFixed(1)}px`;
+					el.style.marginLeft = `-${shift.toFixed(1)}px`;
+				}
+				layer.appendChild(el);
+				const p: Particle = {
+					element: el,
+					x: 0,
+					y: 0,
+					vx: 0,
+					vy: 0,
+					baseOpacity: 0,
+					phase: 0,
+					speed: 0,
+				};
+				resetParticle(p, true);
+				particles.push(p);
+			}
+		}
+
+		function applyPointerInfluence(p: Particle, time: number, step: number): void {
+			if (pointer.active) {
+				const dx = p.x - pointer.x;
+				const dy = p.y - pointer.y;
+				const d = Math.hypot(dx, dy);
+				if (d > 0 && d <= RADIUS) {
+					const force = Math.pow(1 - d / RADIUS, 2);
+					const scale = config.pointerScale;
+					p.x += (dx / d) * force * scale * 1.8 * step;
+					p.y += (dy / d) * force * scale * 1.2 * step;
+					p.phase += force * scale * 0.08 * step;
+				}
+			}
+
+			if (tap.active) {
+				const elapsed = time - tap.start;
+				if (elapsed >= TAP_DURATION) {
+					tap.active = false;
+					return;
+				}
+				const falloff = Math.pow(1 - elapsed / TAP_DURATION, 1.4);
+				const radius = RADIUS * TAP_RADIUS * (0.72 + falloff * 0.28);
+				const dx = p.x - tap.x;
+				const dy = p.y - tap.y;
+				const d = Math.hypot(dx, dy);
+				if (d > 0 && d <= radius) {
+					const force = Math.pow(1 - d / radius, 2);
+					const scale = config.pointerScale * TAP_FORCE * falloff;
+					p.x += (dx / d) * force * scale * 1.8 * step;
+					p.y += (dy / d) * force * scale * 1.2 * step;
+					p.phase += force * scale * 0.08 * step;
+				}
+			}
+		}
+
+		function animate(p: Particle, time: number, motionStep: number, pointerStep: number): void {
+			p.x += p.vx * motionStep;
+			p.y += p.vy * motionStep;
+			applyPointerInfluence(p, time, pointerStep);
+			p.phase += p.speed * motionStep;
+
+			const flicker = 0.72 + Math.sin(time * 0.0017 + p.phase) * 0.28;
+			p.element.style.opacity = (p.baseOpacity * flicker).toFixed(3);
+			p.element.style.transform = `translate3d(${p.x.toFixed(2)}px, ${p.y.toFixed(2)}px, 0)`;
+
+			if (p.y < -24 || p.y > innerHeight + 24 || p.x < -24 || p.x > innerWidth + 24) {
+				resetParticle(p, false);
+			}
+		}
+
+		function frame(time: number): void {
+			const elapsed = last === 0 ? frameMs() : Math.min(96, Math.max(1, time - last));
+			last = time;
+			const motionStep = elapsed / frameMs();
+			const pointerStep = elapsed / pointerFrameMs();
+			for (const p of particles) animate(p, time, motionStep, pointerStep);
+			rafId = requestAnimationFrame(frame);
+		}
+
+		function start(): void {
+			last = 0;
+			cancelAnimationFrame(rafId);
+			rafId = requestAnimationFrame(frame);
+		}
+
+		function teardown(): void {
+			cancelAnimationFrame(rafId);
+			layer.replaceChildren();
+			particles = [];
+		}
+
+		function rebuild(): void {
+			teardown();
+			spawn();
+			start();
+		}
+
+		const pointerEnabled = !isMobile() && !lowPower;
+		const tapEnabled = isMobile() || lowPower;
+
+		window.addEventListener(
+			"pointermove",
+			(e) => {
+				if (!pointerEnabled || e.pointerType !== "mouse") return;
+				pointer.x = e.clientX;
+				pointer.y = e.clientY;
+				pointer.active = true;
+			},
+			{ passive: true }
+		);
+
+		window.addEventListener(
+			"pointerdown",
+			(e) => {
+				if (!tapEnabled) return;
+				tap.x = e.clientX;
+				tap.y = e.clientY;
+				tap.start = performance.now();
+				tap.active = true;
+			},
+			{ passive: true }
+		);
+
+		document.addEventListener("visibilitychange", () => {
+			if (document.hidden) cancelAnimationFrame(rafId);
+			else start();
+		});
+
+		window.addEventListener("beforeunload", () => cancelAnimationFrame(rafId));
+
+		let resizeTimer = 0;
+		const onResize = (): void => {
+			window.clearTimeout(resizeTimer);
+			resizeTimer = window.setTimeout(() => rebuild(), 200);
+		};
+		window.addEventListener("resize", onResize);
+		window.addEventListener("orientationchange", onResize);
+
+		rebuild();
+	} else {
+		layer?.remove();
+	}
+</script>
