@@ -15,10 +15,10 @@ const description =
     Astro.props.description ||
     "Mitchel Rojas Rivera — Estudiante de Ingeniería Civil Telemática, GNU/Linux & Open Source Advocate. Escribo y programo cosas.";
 
-// Sin partículas al leer un post markdown: /writing/{slug} sí, /writing/ no.
 const isBlogPost = /^\/writing\/[^/]+/.test(Astro.url.pathname);
-const canonicalURL = new URL(Astro.url.pathname, Astro.site);
-const previewURL = new URL("/preview.webp", Astro.site);
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site).href;
+const previewURL = new URL("/preview.webp", Astro.site).href; 
 ---
 
 <html lang="es">
@@ -33,21 +33,23 @@ const previewURL = new URL("/preview.webp", Astro.site);
         <meta name="description" content={description} />
         <meta name="robots" content="index, follow" />
         <meta name="theme-color" content="#131418" />
+        
         <link rel="canonical" href={canonicalURL} />
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-        <link rel="icon" href="/favicon.ico" />
-        <link rel="icon" type="image/webp" href="/preview.webp" />
+        <link rel="icon" type="image/svg+xml" href="/cat.svg" />
+        
         <meta property="og:type" content="website" />
-        <meta property="og:site_name" content="Mitchel Rojas Rivera" />
+        <meta property="og:site_name" content="Mitchel Rojas Rivera | michifeli | Estudiante de Ingeniería Civil Telemática, GNU/Linux & Open Source Advocate." />
         <meta property="og:title" content={title} />
         <meta property="og:description" content={description} />
         <meta property="og:image" content={previewURL} />
         <meta property="og:url" content={canonicalURL} />
         <meta property="og:locale" content="es_CL" />
+        
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={description} />
         <meta name="twitter:image" content={previewURL} />
+        
         <title>{title}</title>
         <ClientRouter />
     </head>
