@@ -1,43 +1,72 @@
-# Astro Starter Kit: Minimal
+Este repositorio contiene el sitio personal y blog minimalista hecho con [Astro](https://astro.build) y [Tailwind CSS](https://tailwindcss.com) v4. Esta es la v3 del sitio: la v2 estaba hecha con Svelte y no me convenció, así que la reescribí a mi estilo con un tema oscuro, partículas ASCII y cero JavaScript de carga inicial.
 
-```sh
-pnpm create astro@latest -- --template minimal
-```
+## Requisitos
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+- [Node.js](https://nodejs.org/en) (>= 22.12)
+- [pnpm](https://pnpm.io/es/) (>= 10.x)
 
-## 🚀 Project Structure
+## Ejecución local
 
-Inside of your Astro project, you'll see the following folders and files:
+1. Clona este repositorio:
+
+   ```bash
+   git clone https://github.com/michifeli/michifeli.github.io.git
+   ```
+
+2. Navega al directorio del proyecto:
+
+   ```bash
+   cd michifeli.github.io
+   ```
+
+3. Instala las dependencias:
+
+   ```bash
+   pnpm install
+   ```
+
+4. Inicia el servidor de desarrollo:
+
+   ```bash
+   pnpm dev
+   ```
+
+5. Abre tu navegador y visita [http://localhost:4321](http://localhost:4321) para ver el sitio web en acción.
+
+## Comandos
+
+| Comando            | Acción                                            |
+| :----------------- | :------------------------------------------------ |
+| `pnpm dev`         | Inicia el servidor de desarrollo en `localhost:4321` |
+| `pnpm build`       | Compila el sitio de producción en `./dist/`       |
+| `pnpm preview`     | Previsualiza el build localmente antes de desplegar |
+| `pnpm astro ...`   | Ejecuta comandos de la CLI de Astro (`astro check`, etc.) |
+
+## Deploy a GitHub Pages
+
+El sitio está configurado para desplegarse en la raíz de `https://michifeli.github.io/` (repo de usuario, sin `base`).
+
+1. Compila el sitio:
+
+   ```bash
+   pnpm build
+   ```
+
+2. Sube manualmente el contenido de `dist/` al repositorio `michifeli/michifeli.github.io` (rama `main` o la rama/carpeta que tengas configurada como fuente de GitHub Pages).
+
+3. Listo: el sitio queda publicado en `https://michifeli.github.io/`.
+
+## Estructura
 
 ```text
 /
-├── public/
+├── public/          # Assets estáticos (imágenes, favicon, CVs)
 ├── src/
-│   └── pages/
-│       └── index.astro
+│   ├── components/  # Navbar, Footer, Hero, partículas, etc.
+│   ├── content/     # Colección de posts (writing)
+│   ├── data/        # Datos de proyectos
+│   ├── layouts/     # Layout principal
+│   ├── pages/       # Rutas: /, /writing, /projects, /about, /gallery, /credits
+│   └── styles/      # Estilos globales
 └── package.json
 ```
-
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
-
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `pnpm install`             | Installs dependencies                            |
-| `pnpm dev`             | Starts local dev server at `localhost:4321`      |
-| `pnpm build`           | Build your production site to `./dist/`          |
-| `pnpm preview`         | Preview your build locally, before deploying     |
-| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
