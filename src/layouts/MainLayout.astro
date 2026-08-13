@@ -1,27 +1,67 @@
 ---
 import ParticleBackground from "../components/ParticleBackground.astro";
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
+import { ClientRouter } from "astro:transitions";
 import "../styles/global.css";
 
 interface Props {
-	title?: string;
+    title?: string;
+    description?: string;
 }
 
 const { title = "webv3" } = Astro.props;
+const description =
+    Astro.props.description ||
+    "Mitchel Rojas Rivera — Estudiante de Ingeniería Civil Telemática, GNU/Linux & Open Source Advocate. Escribo y programo cosas.";
+
+// Sin partículas al leer un post markdown: /writing/{slug} sí, /writing/ no.
+const isBlogPost = /^\/writing\/[^/]+/.test(Astro.url.pathname);
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const previewURL = new URL("/preview.webp", Astro.site);
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<title>{title}</title>
-	</head>
-	<body>
-		<ParticleBackground />
-		<div class="relative z-10">
-			<slot />
-		</div>
-	</body>
+<html lang="es">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <script is:inline>
+          const storedTheme = localStorage.getItem("theme");
+          document.documentElement.dataset.theme = storedTheme === "light" ? "light" : "dark";
+        </script>
+        <meta name="generator" content={Astro.generator} />
+        <meta name="description" content={description} />
+        <meta name="robots" content="index, follow" />
+        <meta name="theme-color" content="#131418" />
+        <link rel="canonical" href={canonicalURL} />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" type="image/webp" href="/preview.webp" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Mitchel Rojas Rivera" />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:image" content={previewURL} />
+        <meta property="og:url" content={canonicalURL} />
+        <meta property="og:locale" content="es_CL" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={previewURL} />
+        <title>{title}</title>
+        <ClientRouter />
+    </head>
+    <body class="bg-surface text-ink transition-colors duration-200">
+        {!isBlogPost && <ParticleBackground />}
+
+        <a href="#main-content" class="skip-link">Saltar al contenido</a>
+
+        <div class="relative z-10 flex min-h-screen flex-col">
+          <Navbar />
+          <main id="main-content" class="flex-grow pt-[50px] md:pt-0">
+                <slot />
+            </main>
+            <Footer />
+        </div>
+    </body>
 </html>

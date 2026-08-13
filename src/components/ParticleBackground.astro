@@ -2,16 +2,16 @@
 
 ---
 
-<div id="ascii-particles" aria-hidden="true"></div>
+<div id="ascii-particles" transition:persist aria-hidden="true"></div>
 
 <style is:global>
 	:root {
-		--particle-home: #b47ae2;
-		--particle-home-glow: #6f4b97;
-		--particle-article: #9368b8;
-		--particle-article-glow: #52376f;
-		--particle-volume: #a878d2;
-		--particle-volume-glow: #68448c;
+		--particle-home: #9aa0ad;
+		--particle-home-glow: #4b4f59;
+		--particle-article: #7d8290;
+		--particle-article-glow: #3f434d;
+		--particle-volume: #8a8f9c;
+		--particle-volume-glow: #454955;
 		--text-font: "gohu", ui-monospace, "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
 		--text-size: 14px;
 	}
@@ -19,7 +19,7 @@
 	#ascii-particles {
 		position: fixed;
 		inset: 0;
-		z-index: 2;
+		z-index: -1;
 		overflow: hidden;
 		pointer-events: none;
 		contain: layout paint style;
@@ -64,12 +64,44 @@
 	const sample = (arr: string[]): string => arr[Math.floor(Math.random() * arr.length)];
 	const rand = (min: number, max: number): number => min + Math.random() * (max - min);
 
-	const layer = document.getElementById("ascii-particles");
+	// Inicialización dentro de `astro:page-load` para que funcione con las
+	// View Transitions: al navegar (Home -> About -> Home) el script se
+	// re-ejecuta sobre el nuevo nodo del layout, en vez de quedarse anclado
+	// al DOM de la primera carga (causa de que las partículas "desaparecieran").
+	// El guard evita acumular listeners al re-ejecutarse el script inline
+	// en cada navegación; el listener queda registrado una sola vez y Astro
+	// dispara `astro:page-load` tras cada transición.
+	//
+	// Con `transition:persist` el MISMO nodo `#ascii-particles` sobrevive a la
+	// navegación (mismo DOM, misma densidad, misma posición). Por eso, si ya
+	// está inicializado (dataset.ready), no se toca nada: no se limpia, no se
+	// repuebla ni se reinicia el loop.
+	if (!(window as any).__particlesRegistered) {
+		(window as any).__particlesRegistered = true;
+		document.addEventListener("astro:page-load", () => {
+		const layer = document.getElementById("ascii-particles");
+		if (!layer) return;
 
-	if (layer && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+		// Capa persistida por `transition:persist`: ya está viva y corriendo.
+		if (layer.dataset.ready === "true") return;
+
+		type Cleanup = () => void;
+		const prevCleanup = (window as any).__particlesCleanup as Cleanup | undefined;
+		if (typeof prevCleanup === "function") prevCleanup();
+
+		// Sin distracciones mientras se lee un post markdown.
+		const isMarkdownPost = /^\/writing\/[^/]+$/.test(window.location.pathname);
+		if (isMarkdownPost || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+			layer.remove();
+			return;
+		}
+
+		layer.innerHTML = "";
+		layer.removeAttribute("data-particle-context");
+
 		const MOBILE_BREAKPOINT = 760;
 		const CONTENT_SAFE_WIDTH = 760;
-		const RADIUS = 150;
+		const RADIUS = 180;
 		const TAP_FORCE = 1.62;
 		const TAP_RADIUS = 1.42;
 		const TAP_DURATION = 620;
@@ -86,16 +118,12 @@
 			((navigator as any).deviceMemory ?? 8) <= 4;
 
 		const contexts = {
-			home: { desktopCount: 100, mobileCount: 44, opacity: [0.3, 0.62], pointerScale: 1, frameDesktop: 42, frameMobile: 50 },
-			volume: { desktopCount: 38, mobileCount: 18, opacity: [0.2, 0.44], pointerScale: 0.72, frameDesktop: 52, frameMobile: 66 },
-			article: { desktopCount: 22, mobileCount: 14, opacity: [0.12, 0.28], pointerScale: 0.45, frameDesktop: 78, frameMobile: 88 },
+			home: { desktopCount: 120, mobileCount: 60, opacity: [0.3, 0.55], pointerScale: 1, frameDesktop: 42, frameMobile: 50 },
+			volume: { desktopCount: 60, mobileCount: 30, opacity: [0.22, 0.4], pointerScale: 0.72, frameDesktop: 52, frameMobile: 66 },
+			article: { desktopCount: 40, mobileCount: 24, opacity: [0.16, 0.32], pointerScale: 0.45, frameDesktop: 78, frameMobile: 88 },
 		} as const;
 
-		const contextKey = document.querySelector(".home-shell")
-			? "home"
-			: document.querySelector(".volume-wrap")
-				? "volume"
-				: "article";
+		const contextKey = window.location.pathname === "/" ? "home" : "article";
 		const config = contexts[contextKey];
 		layer.dataset.particleContext = contextKey;
 
@@ -242,76 +270,83 @@
 			}
 		}
 
-		function frame(time: number): void {
-			const elapsed = last === 0 ? frameMs() : Math.min(96, Math.max(1, time - last));
-			last = time;
-			const motionStep = elapsed / frameMs();
-			const pointerStep = elapsed / pointerFrameMs();
-			for (const p of particles) animate(p, time, motionStep, pointerStep);
-			rafId = requestAnimationFrame(frame);
-		}
-
-		function start(): void {
-			last = 0;
-			cancelAnimationFrame(rafId);
-			rafId = requestAnimationFrame(frame);
-		}
-
-		function teardown(): void {
-			cancelAnimationFrame(rafId);
-			layer.replaceChildren();
-			particles = [];
-		}
-
 		function rebuild(): void {
-			teardown();
 			spawn();
-			start();
+			last = performance.now();
+			const loop = (now: number): void => {
+				// Si la capa fue removida del DOM (p. ej. se navegó a una página
+				// sin partículas), detener el loop y liberar todo para que la
+				// próxima página con partículas pueda inicializarse de cero.
+				if (!layer.isConnected) {
+					cleanup();
+					return;
+				}
+				const elapsed = now - last;
+				last = now;
+				const motionStep = Math.min(elapsed / frameMs(), 3);
+				const pointerStep = Math.min(elapsed / pointerFrameMs(), 3);
+				for (let i = 0; i < particles.length; i++) {
+					animate(particles[i], now, motionStep, pointerStep);
+				}
+				rafId = requestAnimationFrame(loop);
+			};
+			rafId = requestAnimationFrame(loop);
 		}
 
-		const pointerEnabled = !isMobile() && !lowPower;
-		const tapEnabled = isMobile() || lowPower;
+		const onPointerMove = (e: PointerEvent): void => {
+			pointer.x = e.clientX;
+			pointer.y = e.clientY;
+			pointer.active = true;
+		};
 
-		window.addEventListener(
-			"pointermove",
-			(e) => {
-				if (!pointerEnabled || e.pointerType !== "mouse") return;
-				pointer.x = e.clientX;
-				pointer.y = e.clientY;
-				pointer.active = true;
-			},
-			{ passive: true }
-		);
+		const onPointerDown = (e: PointerEvent): void => {
+			tap.x = e.clientX;
+			tap.y = e.clientY;
+			tap.start = performance.now();
+			tap.active = true;
+		};
 
-		window.addEventListener(
-			"pointerdown",
-			(e) => {
-				if (!tapEnabled) return;
-				tap.x = e.clientX;
-				tap.y = e.clientY;
+		const onPointerUp = (): void => {
+			pointer.active = false;
+		};
+
+		const onLinkHover = (e: PointerEvent): void => {
+			const target = e.target as HTMLElement | null;
+			const link = target?.closest("a");
+			if (!link) return;
+			const rect = link.getBoundingClientRect();
+			const cx = rect.left + rect.width / 2;
+			const cy = rect.top + rect.height / 2;
+			if (cx >= 0 && cy >= 0 && cx <= innerWidth && cy <= innerHeight) {
+				tap.x = cx;
+				tap.y = cy;
 				tap.start = performance.now();
 				tap.active = true;
-			},
-			{ passive: true }
-		);
-
-		document.addEventListener("visibilitychange", () => {
-			if (document.hidden) cancelAnimationFrame(rafId);
-			else start();
-		});
-
-		window.addEventListener("beforeunload", () => cancelAnimationFrame(rafId));
-
-		let resizeTimer = 0;
-		const onResize = (): void => {
-			window.clearTimeout(resizeTimer);
-			resizeTimer = window.setTimeout(() => rebuild(), 200);
+			}
 		};
-		window.addEventListener("resize", onResize);
-		window.addEventListener("orientationchange", onResize);
 
+		window.addEventListener("pointermove", onPointerMove);
+		window.addEventListener("pointerdown", onPointerDown);
+		window.addEventListener("pointerup", onPointerUp);
+		window.addEventListener("pointerleave", onPointerUp);
+		if (window.matchMedia("(hover: hover)").matches) {
+			window.addEventListener("pointerover", onLinkHover);
+		}
+
+		const cleanup = (): void => {
+			cancelAnimationFrame(rafId);
+			window.removeEventListener("pointermove", onPointerMove);
+			window.removeEventListener("pointerdown", onPointerDown);
+			window.removeEventListener("pointerup", onPointerUp);
+			window.removeEventListener("pointerleave", onPointerUp);
+			window.removeEventListener("pointerover", onLinkHover);
+			layer.dataset.ready = "";
+		};
+
+		layer.dataset.ready = "true";
 		rebuild();
-	} else {
-		layer?.remove();
+
+		(window as any).__particlesCleanup = cleanup;
+		});
 	}
 </script>
