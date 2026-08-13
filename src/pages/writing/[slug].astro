@@ -1,0 +1,107 @@
+---
+import MainLayout from "../../layouts/MainLayout.astro";
+import { getCollection, render, type CollectionEntry } from "astro:content";
+import type { MarkdownHeading } from "astro";
+
+export const getStaticPaths = async () => {
+  const posts = await getCollection("writing");
+
+  const headings = await Promise.all(
+    posts.map((entry) => render(entry).then(({ headings }) => headings)),
+  );
+
+  return posts.map((post, index) => ({
+    params: { slug: post.id },
+    props: { post, headings: headings[index] },
+  }));
+};
+
+type Props = {
+  post: CollectionEntry<"writing">;
+  headings: MarkdownHeading[];
+};
+
+const { post, headings } = Astro.props;
+const { Content } = await render(post);
+
+const { title, date, description, image, tags } = post.data;
+
+const tocHeadings = headings.filter(
+  (heading) => heading.depth === 2 || heading.depth === 3,
+);
+
+const formatDate = (date: Date) =>
+  date.toLocaleDateString("es", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    timeZone: "UTC",
+  });
+---
+
+<MainLayout title={title} description={description}>
+  <article class="pb-24">
+    
+    <!-- 1. CABECERA (Ocupa el 100% de la pantalla inicial) -->
+    <!-- min-h-[calc(100vh-80px)] empuja el contenido hacia abajo -->
+    <div class="mx-auto flex min-h-[calc(100vh-80px)] w-full max-w-[830px] flex-col justify-center px-4 py-10">
+      <img
+        src={image}
+        alt={title}
+        class="aspect-[2/1] w-full rounded-xl border border-line object-cover shadow-sm"
+        fetchpriority="high"
+        loading="eager"
+      />
+
+      <header class="mt-10 space-y-4 text-center">
+        <h1 class="text-3xl font-bold leading-tight text-ink md:text-4xl lg:text-[2.5rem]">
+          {title}
+        </h1>
+        <div class="flex flex-wrap items-center justify-center gap-3 text-sm text-ink/70">
+          <time datetime={date.toISOString()}>{formatDate(date)}</time>
+          <span class="text-ink/30">•</span>
+          {tags.map((tag) => (
+            <span class="rounded-md border border-line bg-surface px-2.5 py-0.5 text-xs transition-transform hover:scale-105">
+              {tag}
+            </span>
+          ))}
+        </div>
+      </header>
+    </div>
+
+    <!-- 2. CUERPO DEL ARTÍCULO (TOC + Contenido + Contrapeso) -->
+    <div class="mx-auto flex max-w-[1400px] items-start justify-center px-4 pt-12 lg:gap-8 xl:gap-16">
+      
+      <!-- BARRA LATERAL (TOC) - Alineada milimétricamente con mt-1.5 -->
+      <aside class="sticky top-24 hidden w-[220px] shrink-0 lg:block mt-1.5">
+        <nav>
+          <p class="mb-4 text-sm font-bold uppercase tracking-wider text-ink/90">On this page</p>
+          <ul class="space-y-3 text-[13.5px] text-ink/60">
+            {tocHeadings.map((heading) => (
+              <li class={`${heading.depth === 3 ? "ml-4" : "ml-0"} ${heading.depth === 2 ? "font-medium text-ink/80" : ""}`}>
+                <a 
+                  href={`#${heading.slug}`} 
+                  class="link text-[13.5px]"
+                >
+                  {heading.text}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </aside>
+
+      <!-- CONTENIDO PRINCIPAL (Markdown) -->
+      <div class="w-full max-w-[830px] shrink-0">
+        <!-- [&>*:first-child]:mt-0 fuerza a que el texto pegue arriba sin márgenes rebeldes -->
+        <div class="prose prose-invert prose-zinc w-full max-w-none prose-img:rounded-xl [&>*:first-child]:mt-0">
+          <Content />
+        </div>
+      </div>
+
+      <!-- CONTRAPESO INVISIBLE -->
+      <div class="hidden w-[220px] shrink-0 xl:block"></div>
+      
+    </div>
+  </article>
+</MainLayout>

@@ -1,0 +1,98 @@
+---
+import MainLayout from "../layouts/MainLayout.astro";
+import PageTitle from "../components/PageTitle.astro";
+---
+
+<MainLayout title="About me.">
+  <div class="mx-auto w-full max-w-[830px] px-4 pb-16 pt-10 md:px-[30px] md:pt-16">
+    <PageTitle title="About." />
+
+    <div class="mt-8 text-[15px] leading-[1.8] text-ink/80">
+      
+      <!-- Avatar flotante -->
+      <!-- En móvil (por defecto) es un bloque centrado. En pantallas grandes (sm:) flota a la derecha -->
+      <img
+        src="/avatar.webp"
+        alt="Mitchel Rojas"
+        class="mx-auto mb-6 block h-40 w-40 rounded-full object-cover object-bottom sm:float-right sm:ml-8 sm:h-56 sm:w-56"
+      />
+
+      <!-- Párrafos de texto -->
+      <!-- Usamos mb-6 en cada <p> en lugar de space-y para que el float funcione perfectamente -->
+      <p class="mb-6">
+        Soy un desarrollador entusiasta y técnico electrónico basado en{" "}
+        <a href="https://es.wikipedia.org/wiki/Chile" target="_blank" rel="noopener noreferrer" class="link font-medium">Chile 🇨🇱</a>, apasionado por crear cosas útiles para el mundo y compartir mi conocimiento con los demás.
+      </p>
+
+      <p class="mb-6">
+        Cuando era más niño, me pasaba mis tardes en internet viendo videos en YouTube, hasta que un
+        día descubrí un video que hablaba sobre{" "}
+        <a href="https://ssd.eff.org/es" target="_blank" rel="noopener noreferrer" class="link font-medium">privacidad de datos y anonimato en internet</a>. Desde entonces, me interesé en la cultura hacker como una manera de salvaguardar mi
+        privacidad e identidad digital.
+      </p>
+
+      <p class="mb-6">
+        Como no sabía nada, le pedí a un técnico que instalara Linux; me cobró algo de 20 dólares (no
+        sabía que era tan simple como bootear un USB). Elegí{" "}
+        <a href="https://www.kali.org/" target="_blank" rel="noopener noreferrer" class="link font-medium">Kali Linux</a> como primera
+        distribución, porque era hacker y ¿quién no quiere ser hacker a los 16 años?
+      </p>
+
+      <p class="mb-6">
+        Actualmente estudio Ingeniería Civil Telemática en la Universidad Técnica Federico Santa María,
+        donde trato de pasar los ramos de plan común y, cuando tengo tiempo, complemento mi formación con
+        proyectos bacanes de código abierto.
+      </p>
+
+      <p class="mb-6">
+        En mis veranos trabajo como técnico electrónico, una de mis otras habilidades, que estudié
+        en el liceo de mi comuna. Realmente no me gusta tanto, a no ser que sean temas de IoT, pero me
+        ayuda a estar más en contacto con lo físico y lo tangible.
+      </p>
+
+      <p class="mb-6">
+        Cofundé <a href="https://lyoss.org" target="_blank" rel="noopener noreferrer" class="link font-medium">Lyoss USM</a>, una
+        comunidad dedicada a promover Linux y a realizar proyectos open source para el bien común en la
+        universidad.
+      </p>
+      
+      <!-- Clearfix invisible por si el texto es muy corto y la imagen se sale del contenedor -->
+      <div class="clear-both"></div>
+    </div>
+
+    <section class="mt-16 border-t border-line pt-8">
+      <h2 class="mb-4 text-2xl font-bold text-ink">Contacto.</h2>
+      <p class="mb-6 text-[15px] leading-[1.8] text-ink/80">
+        Si necesitas contactarme, puedes escribirme directamente a mi correo{" "}
+        <a href="mailto:michidot@proton.me" class="link font-medium">michidot@proton.me</a>.
+        Respondo tan pronto como puedo.
+      </p>
+      <div class="flex flex-col gap-3 text-[15px] sm:flex-row sm:items-center sm:gap-8">
+        <a
+          href="https://www.linkedin.com/in/mitchelrojas/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="flex items-center gap-2 text-ink/80 transition-colors hover:text-white"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <title>LinkedIn</title>
+            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037c-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85c3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065c0-1.138.92-2.063 2.063-2.063c1.14 0 2.064.925 2.064 2.063c0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z"/>
+          </svg>
+          LinkedIn
+        </a>
+        <a
+          href="https://github.com/michifeli"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="flex items-center gap-2 text-ink/80 transition-colors hover:text-white"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <title>GitHub</title>
+            <path d="M12 .297c-6.63 0-12 5.373-12 12c0 5.303 3.438 9.8 8.205 11.385c.6.113.82-.258.82-.577c0-.285-.01-1.04-.015-2.04c-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729c1.205.084 1.838 1.236 1.838 1.236c1.07 1.835 2.809 1.305 3.495.998c.108-.776.417-1.305.76-1.605c-2.665-.3-5.466-1.332-5.466-5.93c0-1.31.465-2.38 1.235-3.22c-.135-.303-.54-1.523.105-3.176c0 0 1.005-.322 3.3 1.23c.96-.267 1.98-.399 3-.405c1.02.006 2.04.138 3 .405c2.28-1.552 3.285-1.23 3.285-1.23c.645 1.653.24 2.873.12 3.176c.765.84 1.23 1.91 1.23 3.22c0 4.61-2.805 5.625-5.475 5.92c.42.36.81 1.096.81 2.22c0 1.606-.015 2.896-.015 3.286c0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+          </svg>
+          GitHub
+        </a>
+      </div>
+    </section>
+  </div>
+</MainLayout>
