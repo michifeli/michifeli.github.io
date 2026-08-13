@@ -2,23 +2,18 @@
 import MainLayout from "../layouts/MainLayout.astro";
 import PageTitle from "../components/PageTitle.astro";
 ---
-
 <MainLayout title="About me.">
   <div class="mx-auto w-full max-w-[830px] px-4 pb-16 pt-10 md:px-[30px] md:pt-16">
     <PageTitle title="About." />
 
     <div class="mt-8 text-[15px] leading-[1.8] text-ink/80">
       
-      <!-- Avatar flotante -->
-      <!-- En móvil (por defecto) es un bloque centrado. En pantallas grandes (sm:) flota a la derecha -->
       <img
         src="/avatar.webp"
         alt="Mitchel Rojas"
         class="mx-auto mb-6 block h-40 w-40 rounded-full object-cover object-bottom sm:float-right sm:ml-8 sm:h-56 sm:w-56"
       />
 
-      <!-- Párrafos de texto -->
-      <!-- Usamos mb-6 en cada <p> en lugar de space-y para que el float funcione perfectamente -->
       <p class="mb-6">
         Soy un desarrollador entusiasta y técnico electrónico basado en{" "}
         <a href="https://es.wikipedia.org/wiki/Chile" target="_blank" rel="noopener noreferrer" class="link font-medium">Chile 🇨🇱</a>, apasionado por crear cosas útiles para el mundo y compartir mi conocimiento con los demás.
@@ -55,19 +50,37 @@ import PageTitle from "../components/PageTitle.astro";
         comunidad dedicada a promover Linux y a realizar proyectos open source para el bien común en la
         universidad.
       </p>
-      
-      <!-- Clearfix invisible por si el texto es muy corto y la imagen se sale del contenedor -->
+      <p class="mb-6 text-[15px] leading-[1.8] text-ink/80">
+        Si quieres conocer más sobre mi trayectoria profesional y técnica, puedes revisar o descargar mi currículum aquí abajo.
+      </p>
+
+      <div class="flex flex-col text-[15px] sm:flex-row sm:items-center">
+        <a
+          href="/CV_Mitchel_Rojas.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="flex items-center gap-2 text-ink/80 transition-colors hover:text-white"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <title>Currículum</title>
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 2.5L17.5 9H13V4.5zM6 20V4h5v7h7v9H6z"/>
+          </svg>
+          Currículum
+        </a>
+      </div>    
       <div class="clear-both"></div>
     </div>
 
     <section class="mt-16 border-t border-line pt-8">
       <h2 class="mb-4 text-2xl font-bold text-ink">Contacto.</h2>
+      
       <p class="mb-6 text-[15px] leading-[1.8] text-ink/80">
         Si necesitas contactarme, puedes escribirme directamente a mi correo{" "}
         <a href="mailto:michidot@proton.me" class="link font-medium">michidot@proton.me</a>.
         Respondo tan pronto como puedo.
       </p>
-      <div class="flex flex-col gap-3 text-[15px] sm:flex-row sm:items-center sm:gap-8">
+      
+      <div class="mb-10 flex flex-col gap-3 text-[15px] sm:flex-row sm:items-center sm:gap-8">
         <a
           href="https://www.linkedin.com/in/mitchelrojas/"
           target="_blank"
