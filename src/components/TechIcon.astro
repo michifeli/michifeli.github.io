@@ -1,0 +1,89 @@
+---
+import {
+  siAstro,
+  siCplusplus,
+  siExpress,
+  siGnubash,
+  siMdx,
+  siNextdotjs,
+  siNodedotjs,
+  siPostgresql,
+  siQgis,
+  siQt,
+  siRaspberrypi,
+  siReact,
+  siTailwindcss,
+  siPython,
+} from "simple-icons";
+
+interface Props {
+  name: string;
+  size?: number;
+}
+
+const { name, size = 14 } = Astro.props;
+
+const iconPaths: Record<string, string> = {
+  Astro: siAstro.path,
+  "C++": siCplusplus.path,
+  "Express.js": siExpress.path,
+  MDX: siMdx.path,
+  "Next.js": siNextdotjs.path,
+  "Node.js": siNodedotjs.path,
+  PostgreSQL: siPostgresql.path,
+  PostGIS: siPostgresql.path,
+  QGIS: siQgis.path,
+  Qt: siQt.path,
+  "Raspberry Pi": siRaspberrypi.path,
+  React: siReact.path,
+  Shell: siGnubash.path,
+  "Tailwind CSS": siTailwindcss.path,
+  Python: siPython.path,
+};
+
+// Official brand colors. Black logos (Express, Next.js, MDX) get a light
+// neutral tint so they stay visible on the dark background. Astro is rendered
+// as solid monochrome (fill="currentColor") to match the minimalist design.
+const brandHex: Record<string, string> = {
+  "C++": siCplusplus.hex,
+  "Express.js": "A8A29E",
+  MDX: "A8A29E",
+  "Next.js": "A8A29E",
+  "Node.js": siNodedotjs.hex,
+  PostgreSQL: siPostgresql.hex,
+  PostGIS: siPostgresql.hex,
+  QGIS: siQgis.hex,
+  Qt: siQt.hex,
+  "Raspberry Pi": siRaspberrypi.hex,
+  React: siReact.hex,
+  Shell: siGnubash.hex,
+  "Tailwind CSS": siTailwindcss.hex,
+  Python: siPython.hex,
+};
+
+const path = iconPaths[name];
+const hex = brandHex[name];
+---
+
+{path ? (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill={hex ? `#${hex}` : "currentColor"}
+    class="shrink-0"
+    aria-hidden="true"
+  >
+    <path d={path} />
+  </svg>
+) : name === "Playwright" ? (
+  <span
+    class="flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-[3px] bg-[#2EAD33]"
+    aria-hidden="true"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" width="7" height="7" viewBox="0 0 24 24" fill="#ffffff">
+      <path d="M8 5v14l11-7z" />
+    </svg>
+  </span>
+) : null}

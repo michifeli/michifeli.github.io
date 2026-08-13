@@ -1,0 +1,101 @@
+---
+const menus = [
+  { title: "home", url: "/", external: false },
+  { title: "writing", url: "/writing/", external: false },
+  { title: "work", url: "/projects/", external: false },
+  { title: "about", url: "/about/", external: false },
+  { title: "gallery", url: "/gallery/", external: false },
+  ];
+
+const { pathname } = Astro.url;
+const normalizePath = (path: string) => path.replace(/\/$/, "");
+
+const activeClasses = (url: string) =>
+  normalizePath(pathname) === normalizePath(url) ? "opacity-100 font-semibold" : "opacity-70";
+---
+
+<div class="navbar-wrapper">
+  <nav
+    class="menu fixed inset-x-0 top-0 z-40 flex h-[50px] items-center justify-between border-b border-line bg-surface/95 px-4 text-ink backdrop-blur-sm
+    md:static md:mx-auto md:h-auto md:max-w-[830px] md:border-b md:border-line md:bg-transparent md:px-[30px] md:py-[15px] md:backdrop-blur-none" role="navigation" aria-label="site navigation"
+  >
+    <input type="checkbox" id="menu-trigger" class="peer hidden" aria-hidden="true" />
+    
+    <label
+      for="menu-trigger"
+      class="flex h-[50px] cursor-pointer items-center text-ink md:hidden"
+      aria-label="toggle menu"
+    >
+      <span class="menu-icon flex h-[23px] w-[50px] items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 512 512" fill="currentColor">
+          <path d="M64,384H448V341.33H64Zm0-106.67H448V234.67H64ZM64,128v42.67H448V128Z" />
+        </svg>
+      </span>
+    </label>
+
+    <button
+      id="mode"
+      class="cursor-pointer text-ink opacity-70 transition-transform active:scale-90 hover:opacity-100"
+      title="toggle theme"
+      aria-label="toggle theme"
+    >
+      <svg class="mode-sunny" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 512 512">
+        <path d="M256 48v48M256 416v48M403.08 108.92l-33.94 33.94M142.86 369.14l-33.94 33.94M464 256h-48M96 256H48M403.08 403.08l-33.94-33.94M142.86 142.86l-33.94-33.94" fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32"/>
+        <circle cx="256" cy="256" r="80" fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32"/>
+      </svg>
+      <svg class="mode-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 512 512">
+        <path d="M160 136c0-30.62 4.51-61.61 16-88C99.57 81.27 48 159.32 48 248c0 119.29 96.71 216 216 216 88.68 0 166.73-51.57 200-128-26.39 11.49-57.38 16-88 16-119.29 0-216-96.71-216-216z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/>
+      </svg>
+    </button>
+
+    <div
+      class="trigger pointer-events-none invisible fixed inset-0 z-30 flex h-screen w-full flex-col items-center justify-center gap-6 bg-surface opacity-0 transition-opacity duration-200 
+      peer-checked:visible peer-checked:pointer-events-auto peer-checked:opacity-100
+      md:pointer-events-auto md:visible md:static md:h-auto md:w-auto md:flex-row md:gap-0 md:bg-transparent md:opacity-100"
+    >
+      <div class="trigger-container flex flex-col items-center gap-6 md:flex-row md:gap-0">
+        {menus.map((m) => (
+          <a
+            class={`menu-link block px-2 py-[5px] text-[17.6px] leading-[2.25] tracking-[0.3px] transition-colors duration-150 hover:text-[#F763BF] hover:underline hover:decoration-wavy hover:decoration-[#F763BF] hover:underline-offset-4 
+            md:text-base md:[&:not(:last-child)]:mr-[5px] ${activeClasses(m.url)}`}
+            href={m.url}
+            {...(m.external ? { target: "_blank", rel: "noopener" } : {})}
+          >
+            {m.title}
+          </a>
+        ))}
+        <a
+          class="menu-link relative -bottom-[3px] block px-2 py-[5px] leading-[2.25] tracking-[0.3px] opacity-70 transition-opacity duration-150 hover:opacity-100 md:text-base"
+          href="/rss.xml"
+          aria-label="RSS feed"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 512 512" fill="#ED812E">
+            <title>RSS</title>
+            <path d="M108.56,342.78a60.34,60.34,0,1,0,60.56,60.44A60.63,60.63,0,0,0,108.56,342.78Z" />
+            <path d="M48,186.67v86.55c52,0,101.94,15.39,138.67,52.11s52,86.56,52,138.67h86.66C325.33,312.44,199.67,186.67,48,186.67Z" />
+            <path d="M48,48v86.56c185.25,0,329.22,144.08,329.22,329.44H464C464,234.66,277.67,48,48,48Z" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </nav>
+</div>
+
+<style is:global>
+  .mode-moon { display: none; }
+  html[data-theme="light"] .mode-moon { display: block; }
+  html[data-theme="light"] .mode-sunny { display: none; }
+</style>
+
+<script>
+  document.addEventListener('astro:page-load', () => {
+    const modeBtn = document.getElementById("mode");
+    modeBtn?.addEventListener("click", () => {
+      const isDark = document.documentElement.dataset.theme !== "light";
+      const nextTheme = isDark ? "light" : "dark";
+
+      document.documentElement.dataset.theme = nextTheme;
+      localStorage.setItem("theme", nextTheme);
+    });
+  });
+</script>

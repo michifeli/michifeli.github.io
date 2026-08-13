@@ -1,0 +1,32 @@
+---
+interface Role {
+  title: string;
+  date: string;
+  description: string;
+}
+
+interface Props {
+  name: string;
+  roles: Role[];
+}
+
+const { name, roles } = Astro.props;
+---
+
+<div class="grid grid-cols-1 gap-x-8 gap-y-4 md:grid-cols-[140px_1fr]">
+  <!-- Espacio vacío en la columna de fecha para mantener alineación -->
+  <div></div>
+  <h3 class="mb-4 text-base font-bold text-ink">
+    <span class="mr-2 text-[#F763BF]" aria-hidden="true">•</span>
+    {name}
+  </h3>
+  {roles.map((role, index) => (
+    <>
+      <div class="pt-0.5 text-sm text-ink/60">{role.date}</div>
+      <div class={index < roles.length - 1 ? "mb-4" : ""}>
+        <h4 class="text-[15px] font-bold text-ink/80">{role.title}</h4>
+        <p class="mt-1 text-[15px] leading-relaxed text-ink/60">{role.description}</p>
+      </div>
+    </>
+  ))}
+</div>

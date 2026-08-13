@@ -1,9 +1,28 @@
 ---
-import BaseLayout from "../layouts/MainLayout.astro";
+import MainLayout from "../layouts/MainLayout.astro";
+import Hero from "../components/Hero.astro";
+import { getCollection } from "astro:content";
+
+const posts = (await getCollection("writing")).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+
+const pad = (n: number) => String(n).padStart(2, "0");
+
+const formatShortDate = (date: Date) => {
+  const y = date.getUTCFullYear();
+  const m = pad(date.getUTCMonth() + 1);
+  const d = pad(date.getUTCDate());
+  return `${y}, ${m}/${d}`;
+};
+
+const heroPosts = posts.slice(0, 3).map((post) => ({
+  title: post.data.title,
+  date: formatShortDate(post.data.date),
+  href: `/writing/${post.id}`,
+}));
 ---
 
-<BaseLayout title="webv3">
-	<main class="home-shell relative z-10">
-		<slot />
-	</main>
-</BaseLayout>
+<MainLayout title="Mitchel Rojas Rivera">
+  <Hero posts={heroPosts} />
+</MainLayout>
