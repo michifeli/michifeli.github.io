@@ -10,6 +10,25 @@ export interface WorkEntry {
   description?: string;
 }
 
+export interface GalleryItem {
+  title: string;
+  image: string;
+  span?: string;
+}
+
+export const galleryPhotos: GalleryItem[] = [
+  {
+    title:
+      "Primera Reunión Comunidad Linux y Open Source USM en Campus San Joaquín",
+    image: "/gallery/lyoss_sj.JPG",
+  },
+  {
+    title:
+      "Primera Reunión Comunidad Linux y Open Source USM en Campus San Joaquín",
+    image: "/gallery/lyoss_sj2.JPG",
+  },
+];
+
 export const personalProjects: Project[] = [
   { name: "webv3", tech: "Astro, Tailwind CSS" },
   { name: "michidots", tech: "Shell" },
@@ -66,3 +85,4 @@ export const work: WorkEntry[] = [
     date: "Jan 2023 - Mar 2023",
   },
 ];
+
