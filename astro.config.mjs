@@ -1,22 +1,23 @@
 // @ts-check
-import { defineConfig } from 'astro/config';
+import { defineConfig } from "astro/config";
 
-import tailwindcss from '@tailwindcss/vite';
+import tailwindcss from "@tailwindcss/vite";
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://michifeli.github.io',
-  output: 'static',
+  site: "https://mrojasr.cl",
+  output: "static",
   vite: {
-    plugins: [tailwindcss()]
+    plugins: [tailwindcss()],
   },
   markdown: {
-    syntaxHighlight: 'shiki',
+    syntaxHighlight: "shiki",
     shikiConfig: {
       themes: {
-        light: 'catppuccin-latte',
-        dark: 'tokyo-night',
+        light: "catppuccin-latte",
+        dark: "tokyo-night",
       },
     },
   },
 });
+
